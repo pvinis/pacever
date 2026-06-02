@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PaceVer — Pace Versioning</title>
+    <meta
+      name="description"
+      content="Pace Versioning (PaceVer): version your app by the pace each release ships at. MARKETING.NATIVE.OTA, a versioning scheme for React Native, Expo, and OTA-updatable apps."
+    />
+    <meta name="theme-color" content="#fcfbf8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0f13" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="PaceVer — Pace Versioning" />
+    <meta
+      property="og:description"
+      content="Version your app by the pace each release ships at. MARKETING.NATIVE.OTA."
+    />
+    <meta property="og:type" content="website" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ccircle%20cx='3'%20cy='8'%20r='2'%20fill='%23a78bfa'/%3E%3Ccircle%20cx='8'%20cy='8'%20r='2'%20fill='%23e0a83a'/%3E%3Ccircle%20cx='13'%20cy='8'%20r='2'%20fill='%2334b27b'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/400.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/700.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <a class="repo-link" href="https://github.com/pvinis/pacever">GitHub ↗</a>
+      <h1>Pace Versioning</h1>
+      <p class="tagline">Version your app by the <strong>pace</strong> each release travels at.</p>
+      <p class="format" aria-label="MARKETING dot NATIVE dot OTA">
+        <span class="marketing">MARKETING</span><span class="dot">.</span><span class="native">NATIVE</span><span class="dot">.</span><span class="ota">OTA</span>
+      </p>
+      <p class="lede">
+        PaceVer is a versioning scheme for user-facing apps that reach people through
+        <strong>two channels at two speeds</strong>: a slow, gated <strong>native</strong> build that
+        goes through an app store, and a fast, independent <strong>over-the-air (OTA)</strong> update
+        that lands on an already-installed build. The version number tells you which channel a
+        release came down: its <em>pace</em>, not its size.
+      </p>
+      <p class="lede">
+        It is built for the world of React Native, Expo, and any framework where some releases
+        require a new binary and others can be pushed straight to devices.
+      </p>
+    </header>
+
+    <main>
+      <section id="summary">
+        <h2><a href="#summary">Summary</a></h2>
+        <p>A version number takes the form <code>MARKETING.NATIVE.OTA</code>:</p>
+        <pre class="tree"><code>  1   .   4   .   12
+  │       │       │
+  │       │       └─ <span class="ota">OTA</span>        bumped on every over-the-air update   (fast)
+  │       └───────── <span class="native">NATIVE</span>     bumped on every new store binary      (slow)
+  └───────────────── <span class="marketing">MARKETING</span>  yours to define: era, year, redesign, or never</code></pre>
+        <ul>
+          <li>
+            <strong class="marketing">MARKETING</strong>: the free number. Bump it for a redesign, a
+            new year, a rebrand, a rewrite, a milestone, or never. It carries no compatibility
+            promise. If you care about signalling the <em>magnitude</em> of a change, this is the only
+            place it lives. <code>0</code> is reserved for the pre-release era; ship your first stable
+            release as <code>1.0.0</code> and go from there.
+          </li>
+          <li>
+            <strong class="native">NATIVE</strong>: bump it when a release needs a
+            <strong>new binary installed from a store</strong> (anything OTA can't deliver: native
+            code, new dependencies, SDK/runtime upgrades, permission changes). Slow: gated behind
+            store review. Resets OTA to 0.
+          </li>
+          <li>
+            <strong class="ota">OTA</strong>: bump it for every release pushed
+            <strong>over the air</strong> to an existing build (JavaScript, styling, content, assets
+            within the current runtime). Fast: lands in minutes, no store review.
+          </li>
+        </ul>
+        <p>
+          A new native build always resets OTA to <code>0</code>. By default a MARKETING bump resets
+          NATIVE and OTA too, so a redesign goes to <code>2.0.0</code>; a team may instead let the
+          numbers keep climbing to <code>2.6.2</code> (see the FAQ). Pick one convention and stay
+          consistent.
+        </p>
+      </section>
+
+      <section id="introduction">
+        <h2><a href="#introduction">Introduction</a></h2>
+        <p>
+          Mobile apps don't ship the way libraries do. A library has one release channel and one
+          question that matters: <em>did the contract break?</em> That's what Semantic Versioning
+          answers, and it answers it well.
+        </p>
+        <p>
+          An app shipped with React Native, Expo, or a similar framework has <strong>two</strong>
+          release channels moving at <strong>two speeds</strong>. Some changes (a new native module,
+          an SDK bump, a new permission) can only reach users as a fresh binary through a distribution
+          channel (App Store, Play Store, TestFlight, enterprise/MDM): slow, gated behind
+          redistribution, impossible to roll back instantly. Other changes (a copy fix, a restyled
+          screen, a JS-only feature) can be pushed over the air and land on devices in minutes,
+          independently, with no store review.
+        </p>
+        <p>
+          SemVer can't see this. Its <code>MAJOR.MINOR.PATCH</code> describes <em>what changed</em>; it
+          says nothing about <em>how the change reaches the user</em>, which on mobile is the fact
+          that governs review latency, rollout speed, and rollback. PaceVer makes that fact the
+          version.
+        </p>
+        <p>
+          PaceVer deliberately says nothing about the size of a change. A one-word fix and a screen
+          rewrite both bump OTA by one, because they ship the same way, at the same pace. If your team
+          wants to signal that a release is a big deal, that signal goes in MARKETING, which is yours
+          to spend however you like.
+        </p>
+      </section>
+
+      <section id="spec">
+        <h2><a href="#spec">PaceVer Specification</a></h2>
+        <p>
+          The key words "MUST", "MUST NOT", "SHOULD", "SHOULD NOT", and "MAY" are to be interpreted as
+          described in <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a>.
+        </p>
+        <ol class="spec-list">
+          <li id="spec-1">
+            A project using PaceVer MUST distinguish two kinds of releases:
+            <strong>native releases</strong>, which require a new binary to be installed through a
+            distribution channel (App Store, Play Store, TestFlight, enterprise/MDM, or equivalent),
+            and <strong>OTA releases</strong>, which are delivered to an already-installed binary
+            without redistribution.
+          </li>
+          <li id="spec-2">
+            A normal version number MUST take the form <code>X.Y.Z</code>, where <code>X</code>
+            (MARKETING), <code>Y</code> (NATIVE), and <code>Z</code> (OTA) are non-negative integers
+            and MUST NOT contain leading zeroes. Each successive version MUST increase in precedence,
+            as defined in rule 10. Individual elements need not increase one by one: incrementing an
+            element resets the elements to its right (rule 6), so the version as a whole always orders
+            forward even though a reset element drops to <code>0</code>.
+          </li>
+          <li id="spec-3">
+            <strong class="marketing">MARKETING</strong> (<code>X</code>) is reserved at <code>0</code>
+            to mean the app is pre-release, not yet considered stable or shipped to the public. Once
+            MARKETING reaches <code>1</code> or higher, the <em>reason</em> and <em>magnitude</em> of
+            an increment carry no required meaning and no compatibility promise: a team MAY increment
+            it for any reason (a new year, a redesign, a rebrand, a rewrite, a milestone, the magnitude
+            of a change) or never increment it again. Its one fixed constraint is direction: MARKETING
+            MUST be monotonically non-decreasing over the life of the project.
+          </li>
+          <li id="spec-4">
+            <strong class="native">NATIVE</strong> (<code>Y</code>) MUST be incremented when a release
+            requires a new binary to be installed, that is, any change that cannot be delivered over
+            the air. This includes, but is not limited to: native code or native dependency changes,
+            runtime or SDK upgrades, permission or entitlement changes, and changes to compiled
+            application configuration.
+          </li>
+          <li id="spec-5">
+            <strong class="ota">OTA</strong> (<code>Z</code>) MUST be incremented for each release
+            delivered over the air to an existing native build, that is, any change deliverable without
+            a new binary, such as JavaScript, styling, content, and assets running within the current
+            native runtime.
+          </li>
+          <li id="spec-6">
+            When NATIVE is incremented, OTA MUST be reset to <code>0</code>, because a new native build
+            begins a fresh OTA lineage. When MARKETING is incremented, NATIVE and OTA SHOULD be reset
+            to <code>0</code>; this is the recommended default. A project MAY instead let NATIVE and OTA
+            keep climbing across a MARKETING bump (see the FAQ), but it MUST pick one convention and
+            apply it consistently.
+          </li>
+          <li id="spec-7">
+            A freshly installed native build, before any OTA release has been applied, is at OTA
+            <code>0</code>. The JavaScript and assets bundled inside a native build are its
+            <strong>baseline</strong>, not an OTA release, and MUST NOT be counted as OTA <code>1</code>.
+          </li>
+          <li id="spec-8">
+            The version a build reports SHOULD be composed at runtime: MARKETING and NATIVE are fixed
+            by the installed binary; OTA reflects the over-the-air release currently applied, or
+            <code>0</code> if none has been applied.
+          </li>
+          <li id="spec-9">
+            An OTA release MUST be compatible with the native build it targets, and MUST NOT be
+            delivered to a native build it was not produced for. (In Expo/EAS terms, OTA releases are
+            scoped to a matching runtime version.)
+          </li>
+          <li id="spec-10">
+            <strong>Precedence</strong> is determined by comparing MARKETING, then NATIVE, then OTA,
+            numerically (<code>1.2.0 &lt; 1.2.7 &lt; 1.3.0 &lt; 2.0.0</code>).
+          </li>
+          <li id="spec-11">
+            <strong>One version line, all platforms in lockstep.</strong> MARKETING, NATIVE, and OTA
+            are single project-wide numbers, <strong>not</strong> tracked per platform. When NATIVE is
+            incremented, a new binary MUST be released to every native distribution channel the app
+            ships through (App Store, Play Store, and so on), even for a platform with no functional
+            change, so that all platforms share the same NATIVE build. This keeps every platform on a
+            common runtime, so a single OTA release applies to all of them under one OTA number.
+            Platforms therefore never diverge: there is always exactly one current version for the
+            whole app.
+          </li>
+          <li id="spec-12">
+            <strong>Scope.</strong> PaceVer is for user-facing application clients that ship through a
+            native channel and an OTA channel. It is <strong>NOT</strong> for libraries, packages, or
+            APIs that expose a programmatic contract to other software. Version those with SemVer.
+          </li>
+          <li id="spec-13">
+            Identifiers MAY be appended after OTA: a hyphen introduces pre-release identifiers (e.g.
+            <code>1.4.0-rc.1</code>) and a plus sign introduces build metadata (e.g.
+            <code>1.4.0+ios</code>). PaceVer assigns these suffixes no channel or pace meaning; their
+            interpretation is left to the team. Build metadata MUST be ignored when determining
+            precedence.
+          </li>
+          <li id="spec-14">
+            <strong>Initial version and going stable.</strong> A project SHOULD begin at
+            <code>0.1.0</code>, where MARKETING <code>0</code> marks the pre-release era. NATIVE and
+            OTA increment as usual through the <code>0.x</code> era. When the team considers the app
+            stable and ready for the public, it increments MARKETING to <code>1</code>. With the
+            recommended reset (rule 6) the first stable release is <code>1.0.0</code>; a team that does
+            not reset carries its running numbers instead, so <code>0.5.3</code> becomes
+            <code>1.5.3</code>. The exact moment of going stable is the team's call.
+          </li>
+        </ol>
+      </section>
+
+      <section id="why">
+        <h2><a href="#why">Why use PaceVer</a></h2>
+        <ul>
+          <li>
+            <strong>The number tells you the pace.</strong> <code>2.5.0 → 2.5.3</code> shipped over the
+            air and is already on devices. <code>2.5.3 → 2.6.0</code> is a new binary waiting on store
+            review. You know the deployment story at a glance.
+          </li>
+          <li>
+            <strong>It fits store rules for free.</strong> The binary carries
+            <code>MARKETING.NATIVE.0</code> as its marketing version (the three integers the stores
+            expect, with OTA pinned at <code>0</code> as the baseline); the live OTA number is composed
+            on top at runtime.
+          </li>
+          <li>
+            <strong>It stays SemVer-compatible in form.</strong> A PaceVer version is still an
+            <code>X.Y.Z</code> string ordered by the same left-to-right precedence as SemVer, so
+            tooling that sorts or compares SemVer-shaped versions keeps working. PaceVer changes what
+            the three positions <em>mean</em>, not the format or the ordering.
+          </li>
+          <li>
+            <strong>It ends the MAJOR argument.</strong> No more debating whether a redesign "deserves"
+            a major bump. MARKETING is a free number you point at whatever your team cares about.
+          </li>
+          <li>
+            <strong>It matches the tooling you already use.</strong> NATIVE lines up with your binary /
+            runtime version; OTA lines up with your update channel (EAS Update, CodePush).
+          </li>
+        </ul>
+      </section>
+
+      <section id="when-not">
+        <h2><a href="#when-not">When NOT to use PaceVer</a></h2>
+        <p>
+          PaceVer is for user-facing application clients that ship through a native channel and an OTA
+          channel (rule 12). It is the wrong tool when:
+        </p>
+        <ul>
+          <li>
+            <strong>You are versioning a library, package, or API.</strong> Anything that exposes a
+            programmatic contract to other software should use SemVer, whose whole job is to signal
+            compatibility. PaceVer says nothing about compatibility.
+          </li>
+          <li>
+            <strong>Your app has effectively one delivery channel.</strong> A web app or PWA where
+            every deploy goes out the same way has no native/OTA split for PaceVer to capture. Version
+            it on its own terms.
+          </li>
+          <li>
+            <strong>Your audience keys off recency or magnitude.</strong> If readers of your version
+            number primarily want "how recent" (CalVer) or "how big" (SemVer MAJOR) rather than "which
+            channel," PaceVer puts the signal they want in the wrong place.
+          </li>
+        </ul>
+        <p>
+          Adopting PaceVer means giving up SemVer's compatibility contract and CalVer's at-a-glance
+          recency in exchange for an at-a-glance <em>pace</em> signal. Make that trade on purpose.
+        </p>
+      </section>
+
+      <section id="example">
+        <h2><a href="#example">Example: one app's version history</a></h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>Channel</th>
+              <th>What shipped</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>0.1.0</code></td><td><span class="native">NATIVE</span></td><td>First build. The pre-release era begins.</td></tr>
+            <tr><td><code>0.1.1</code></td><td><span class="ota">OTA</span></td><td>Beta copy tweak, pushed over the air.</td></tr>
+            <tr><td><code>0.2.0</code></td><td><span class="native">NATIVE</span></td><td>Added a camera module, new binary to testers, OTA resets.</td></tr>
+            <tr><td><code>1.0.0</code></td><td><span class="native">NATIVE</span></td><td>First public release on the App Store and Play Store. MARKETING → 1, everything resets.</td></tr>
+            <tr><td><code>1.0.1</code></td><td><span class="ota">OTA</span></td><td>Typo fix, on devices in minutes.</td></tr>
+            <tr><td><code>1.0.2</code></td><td><span class="ota">OTA</span></td><td>JavaScript crash fix.</td></tr>
+            <tr><td><code>1.1.0</code></td><td><span class="native">NATIVE</span></td><td>Expo SDK upgrade, new binary to both stores, OTA resets.</td></tr>
+            <tr><td><code>1.1.1</code></td><td><span class="ota">OTA</span></td><td>Restyled a screen.</td></tr>
+            <tr><td><code>2.0.0</code></td><td><span class="native">NATIVE</span></td><td>A full seasonal redesign the team wants to flag. MARKETING bump, new binary to both stores, everything resets.</td></tr>
+          </tbody>
+        </table>
+        <p>
+          Every row tells you how it shipped from the number alone: a middle-digit change means a trip
+          through the store; a last-digit change means it was already on devices in minutes.
+        </p>
+      </section>
+
+      <section id="faq">
+        <h2><a href="#faq">FAQ</a></h2>
+        <div class="faq">
+          <h3>Where does the OTA number physically live?</h3>
+          <p>
+            Not in the binary's store version. An OTA update can't rewrite that, and that's fine. The
+            app composes its version at runtime: it reads MARKETING and NATIVE from the binary and OTA
+            from the applied update's manifest (e.g. <code>Updates.manifest</code> / <code>extra</code>
+            in Expo). A fresh install with no update applied reports OTA <code>0</code>.
+          </p>
+
+          <h3>Does a higher OTA number mean a bigger change?</h3>
+          <p>
+            No. OTA counts over-the-air <em>releases</em>, not their size. A typo fix and a new screen
+            both bump OTA by one. If you care about magnitude, spend the MARKETING number on it.
+          </p>
+
+          <h3>Does bumping MARKETING reset NATIVE and OTA to zero?</h3>
+          <p>
+            By default, yes. A MARKETING bump goes to <code>X.0.0</code>, exactly as a NATIVE bump
+            resets OTA, so a redesign from <code>1.6.2</code> lands on <code>2.0.0</code>. This is the
+            recommended convention, but resetting on a MARKETING bump is not mandatory; see the next
+            question.
+          </p>
+
+          <h3>Can I skip the reset and let the numbers keep climbing?</h3>
+          <p>
+            Yes. Instead of resetting, you may let MARKETING float as a pure label while NATIVE and OTA
+            keep climbing, so <code>1.6.2</code> becomes <code>2.6.2</code> rather than
+            <code>2.0.0</code>. The tradeoff: you give up the clean <code>X.0.0</code> era boundary, but
+            you keep a single monotonic native and OTA count across the whole life of the app, which
+            some teams find easier to reason about. Precedence still works either way, since versions
+            compare left to right. Whichever you pick, apply it consistently. (A new NATIVE build always
+            resets OTA regardless; that part is not optional, because a new binary starts a fresh OTA
+            lineage.)
+          </p>
+
+          <h3>Can I bump MARKETING or NATIVE with an over-the-air update?</h3>
+          <p>
+            No. MARKETING and NATIVE live in the installed binary (rule 8), so changing either one means
+            shipping a new native build. Only OTA moves without a new binary, which is why a MARKETING or
+            NATIVE change always lands with OTA back at <code>0</code>.
+          </p>
+
+          <h3>Can I roll back a native release?</h3>
+          <p>
+            No, and that's by design: like the app stores themselves, PaceVer has no concept of a native
+            rollback. NATIVE only ever moves forward (rule 2's precedence), and an OTA release is scoped
+            to the native build it was produced for (rule 9), so you can't drop users back onto a
+            previous binary's OTA lineage. To recover from a bad native build you re-release the previous
+            good build's content forward under a new NATIVE number, for example shipping what was NATIVE 5
+            again as NATIVE 7, and go from there. OTA, by contrast, can be rolled back within the same
+            native build, as fast as it ships.
+          </p>
+
+          <h3>A native change only affects iOS. Do I have to release Android too?</h3>
+          <p>
+            Yes, and on purpose. A NATIVE bump ships a new binary to <em>every</em> platform, even one
+            with no functional change, so all platforms stay on the same NATIVE build. This is for OTA's
+            sake: OTA releases are scoped to a runtime, so keeping every platform on a common runtime
+            lets one OTA release land everywhere under a single OTA number. The seemingly redundant
+            Android build usually isn't empty anyway: bumping NATIVE bumps the runtime, so it's a real
+            new binary, just without feature changes. The cost is one extra store submission; the payoff
+            is one coherent version line for the whole app.
+          </p>
+
+          <h3>My app is also on the web. There's no native build there.</h3>
+          <p>
+            PaceVer doesn't cover web. Web (and PWAs) has effectively one channel (every deploy is over
+            the air), so the native/OTA split doesn't apply. Version web on its own terms.
+          </p>
+
+          <h3>Can I use PaceVer for my library or backend API?</h3>
+          <p>
+            No. Use SemVer. PaceVer says nothing about API compatibility, which is the whole point of
+            versioning a library. PaceVer is for shipping apps, not contracts.
+          </p>
+
+          <h3>Why isn't PaceVer versioned with PaceVer?</h3>
+          <p>
+            Because PaceVer is for apps, and this is a document. A spec has no native build and no
+            over-the-air channel. It has a contract that other people rely on, which is exactly what the
+            Scope rule says to version with SemVer. So PaceVer eats its own rule and ships as SemVer.
+            SemVer versions itself; PaceVer versions itself with SemVer. Each tool to its job.
+          </p>
+
+          <h3>What about the very first release?</h3>
+          <p>
+            Start at <code>0.1.0</code>. MARKETING <code>0</code> is the pre-release era, and you build
+            through <code>0.x</code> until the app is ready. When it's ready for the public, bump
+            MARKETING to <code>1</code>. With the recommended reset that lands you on <code>1.0.0</code>;
+            if you don't reset, you carry your running numbers to <code>1.y.z</code>. The recommended
+            path is simply <code>0.1.0 → 1.0.0 →</code> onward. The exact moment doesn't really matter;
+            it's a flag you raise when it feels true.
+          </p>
+
+          <h3>I already ship under SemVer. How do I migrate?</h3>
+          <p>
+            Don't reset downward. The App Store and Play Store reject a marketing version that decreases,
+            so an app already at, say, <code>3.4.1</code> cannot adopt PaceVer by starting over at
+            <code>1.0.0</code>. Because MARKETING is a free, monotonically non-decreasing number, keep
+            your current leading number as MARKETING and start applying PaceVer's NATIVE and OTA
+            semantics from where you are. The <code>0.1.0</code> start and the reset rules are for new
+            projects; an existing app carries its history forward.
+          </p>
+        </div>
+      </section>
+
+      <section id="about">
+        <h2><a href="#about">About</a></h2>
+        <p>PaceVer was created in 2026 by <a href="https://github.com/pvinis">Pavlos Vinieratos</a>.</p>
+        <p>
+          This specification is itself versioned with <strong>SemVer</strong>, not PaceVer. A spec is a
+          document with a contract people rely on, not an app shipping through native and OTA channels,
+          so by PaceVer's own Scope rule (rule 12) it uses the right tool for the job.
+        </p>
+        <p class="version">Current version: <strong>1.0.0</strong> (SemVer).</p>
+      </section>
+
+      <section id="license">
+        <h2><a href="#license">License</a></h2>
+        <p>
+          PaceVer, the Pace Versioning specification, is licensed under a
+          <a href="https://creativecommons.org/licenses/by/4.0/"
+            >Creative Commons Attribution 4.0 International License (CC BY 4.0)</a
+          >. You are free to share and adapt it, including commercially, as long as you give
+          appropriate credit.
+        </p>
+        <p>Copyright © 2026 <a href="https://github.com/pvinis">Pavlos Vinieratos</a>.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <span class="marketing">PaceVer</span> · spec <strong>1.0.0</strong> (SemVer) ·
+        <a href="https://github.com/pvinis/pacever">source on GitHub</a> ·
+        <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+      </p>
+    </footer>
+  </body>
+</html>

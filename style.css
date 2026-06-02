@@ -1,0 +1,273 @@
+/* PaceVer site styles. Iosevka throughout, light + dark via prefers-color-scheme. */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #fcfbf8;
+  --fg: #1b1b1f;
+  --muted: #6a6a72;
+  --border: #e7e4dc;
+  --code-bg: #f3f1ea;
+  --accent: #0e7c66;
+
+  /* the three components */
+  --marketing: #7c3aed;
+  --native: #b4690e;
+  --ota: #0f9d6b;
+
+  --maxw: 46rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0f13;
+    --fg: #e7e7ec;
+    --muted: #9a9aa4;
+    --border: #272a31;
+    --code-bg: #1b1e24;
+    --accent: #6dd0ac;
+
+    --marketing: #b99bff;
+    --native: #e6a84a;
+    --ota: #46c98c;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Iosevka", ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", Menlo, Consolas,
+    monospace;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.7;
+  font-size: 16px;
+  margin: 0;
+  padding: 0 1.25rem 4rem;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.hero,
+main,
+footer {
+  max-width: var(--maxw);
+  margin-inline: auto;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 2px;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* component colours */
+.marketing {
+  color: var(--marketing);
+}
+.native {
+  color: var(--native);
+}
+.ota {
+  color: var(--ota);
+}
+
+/* hero */
+.hero {
+  position: relative;
+  text-align: center;
+  padding: 4rem 0 2rem;
+}
+.repo-link {
+  position: absolute;
+  top: 1.25rem;
+  right: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.repo-link:hover {
+  color: var(--accent);
+}
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: -0.02em;
+  margin: 0.5rem 0 0.25rem;
+}
+.tagline {
+  color: var(--muted);
+  margin: 0.25rem 0 1.5rem;
+}
+.format {
+  font-size: clamp(1rem, 5.5vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 1.25rem 0 2rem;
+  white-space: nowrap;
+}
+.format .dot {
+  color: var(--muted);
+  margin: 0 0.08em;
+}
+.lede {
+  text-align: left;
+  margin: 1.25rem 0;
+}
+
+/* sections */
+main > section {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+}
+main > section:first-child {
+  border-top: 0;
+  padding-top: 1rem;
+}
+h2 {
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 1rem;
+}
+h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+h2 a:hover::after {
+  content: " #";
+  color: var(--muted);
+}
+h3 {
+  font-size: 1.05rem;
+  margin: 1.75rem 0 0.4rem;
+}
+p {
+  margin: 1rem 0;
+}
+
+/* lists */
+ul,
+ol {
+  padding-left: 1.5rem;
+}
+li {
+  margin: 0.6rem 0;
+}
+ol.spec-list {
+  padding-left: 1.8rem;
+}
+ol.spec-list li {
+  margin: 1rem 0;
+  padding-left: 0.3rem;
+  scroll-margin-top: 1.5rem;
+}
+ol.spec-list li::marker {
+  color: var(--muted);
+}
+ol.spec-list li:target {
+  background: var(--code-bg);
+  border-radius: 6px;
+  box-shadow: -0.6rem 0 0 var(--code-bg), inset 3px 0 0 var(--accent);
+}
+
+/* code */
+code {
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.9rem;
+}
+pre.tree code {
+  white-space: pre;
+}
+
+/* table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.92rem;
+}
+th,
+td {
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-weight: 700;
+  border-bottom: 2px solid var(--border);
+}
+th:first-child,
+td:first-child,
+th:nth-child(2),
+td:nth-child(2) {
+  white-space: nowrap;
+}
+tbody tr:hover {
+  background: var(--code-bg);
+}
+
+/* faq */
+.faq p {
+  margin: 0.4rem 0 1.4rem;
+}
+
+/* version stamp */
+.version {
+  color: var(--muted);
+}
+
+/* footer */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+footer a {
+  color: var(--muted);
+}
+footer a:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 420px) {
+  .hero {
+    padding-top: 3rem;
+  }
+  body {
+    font-size: 15px;
+  }
+}

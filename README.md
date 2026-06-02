@@ -53,8 +53,9 @@ answers, and it answers it well.
 
 An app shipped with React Native, Expo, or a similar framework has **two** release
 channels moving at **two speeds**. Some changes (a new native module, an SDK bump, a
-new permission) can only reach users as a fresh binary through the App Store or Play
-Store: slow, gated behind review, impossible to roll back instantly. Other changes
+new permission) can only reach users as a fresh binary through a distribution channel
+(App Store, Play Store, TestFlight, enterprise/MDM): slow, gated behind redistribution,
+impossible to roll back instantly. Other changes
 (a copy fix, a restyled screen, a JS-only feature) can be pushed over the air and
 land on devices in minutes, independently, with no store review.
 
@@ -82,12 +83,16 @@ interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
    redistribution.
 1. A normal version number MUST take the form `X.Y.Z`, where `X` (MARKETING), `Y`
    (NATIVE), and `Z` (OTA) are non-negative integers and MUST NOT contain leading
-   zeroes. Each element MUST increase numerically.
+   zeroes. Each successive version MUST increase in precedence, as defined in rule
+   10. Individual elements need not increase one by one: incrementing an element resets
+   the elements to its right (rule 6), so the version as a whole always orders forward
+   even though a reset element drops to `0`.
 1. **MARKETING (`X`)** is reserved at `0` to mean the app is pre-release, not yet
-   considered stable or shipped to the public. Once MARKETING reaches `1` or higher
-   it carries no required meaning and no compatibility promise: a team MAY increment
-   it for any reason (a new year, a redesign, a rebrand, a rewrite, a milestone, the
-   magnitude of a change) or never increment it again. MARKETING MUST be
+   considered stable or shipped to the public. Once MARKETING reaches `1` or higher,
+   the _reason_ and _magnitude_ of an increment carry no required meaning and no
+   compatibility promise: a team MAY increment it for any reason (a new year, a
+   redesign, a rebrand, a rewrite, a milestone, the magnitude of a change) or never
+   increment it again. Its one fixed constraint is direction: MARKETING MUST be
    monotonically non-decreasing over the life of the project.
 1. **NATIVE (`Y`)** MUST be incremented when a release requires a new binary to be
    installed, that is, any change that cannot be delivered over the air. This
@@ -126,9 +131,10 @@ interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
    native channel and an OTA channel. It is **NOT** for libraries, packages, or
    APIs that expose a programmatic contract to other software. Version those with
    SemVer.
-1. A pre-release MAY be denoted by appending a hyphen and dot-separated identifiers
-   after OTA (e.g. `1.4.0-beta.1`). Build metadata MAY be appended with a plus sign
-   (e.g. `1.4.0+ios`). Build metadata MUST be ignored when determining precedence.
+1. Identifiers MAY be appended after OTA: a hyphen introduces pre-release identifiers
+   (e.g. `1.4.0-rc.1`) and a plus sign introduces build metadata (e.g. `1.4.0+ios`).
+   PaceVer assigns these suffixes no channel or pace meaning; their interpretation is
+   left to the team. Build metadata MUST be ignored when determining precedence.
 1. **Initial version and going stable.** A project SHOULD begin at `0.1.0`, where
    MARKETING `0` marks the pre-release era. NATIVE and OTA increment as usual
    through the `0.x` era. When the team considers the app stable and ready for the
@@ -144,12 +150,38 @@ interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
 - **The number tells you the pace.** `2.5.0 → 2.5.3` shipped over the air and is
   already on devices. `2.5.3 → 2.6.0` is a new binary waiting on store review. You
   know the deployment story at a glance.
-- **It fits store rules for free.** `MARKETING.NATIVE` maps cleanly onto the three-
-  integer marketing version stores require; OTA is tracked live by the app on top.
+- **It fits store rules for free.** The binary carries `MARKETING.NATIVE.0` as its
+  marketing version (the three integers the stores expect, with OTA pinned at `0` as
+  the baseline); the live OTA number is composed on top at runtime.
+- **It stays SemVer-compatible in form.** A PaceVer version is still an `X.Y.Z` string
+  ordered by the same left-to-right precedence as SemVer, so tooling that sorts or
+  compares SemVer-shaped versions keeps working. PaceVer changes what the three
+  positions _mean_, not the format or the ordering.
 - **It ends the MAJOR argument.** No more debating whether a redesign "deserves" a
   major bump. MARKETING is a free number you point at whatever your team cares about.
 - **It matches the tooling you already use.** NATIVE lines up with your binary /
   runtime version; OTA lines up with your update channel (EAS Update, CodePush).
+
+---
+
+## When NOT to use PaceVer
+
+PaceVer is for user-facing application clients that ship through a native channel and
+an OTA channel (rule 12). It is the wrong tool when:
+
+- **You are versioning a library, package, or API.** Anything that exposes a
+  programmatic contract to other software should use SemVer, whose whole job is to
+  signal compatibility. PaceVer says nothing about compatibility.
+- **Your app has effectively one delivery channel.** A web app or PWA where every
+  deploy goes out the same way has no native/OTA split for PaceVer to capture. Version
+  it on its own terms.
+- **Your audience keys off recency or magnitude.** If readers of your version number
+  primarily want "how recent" (CalVer) or "how big" (SemVer MAJOR) rather than "which
+  channel," PaceVer puts the signal they want in the wrong place.
+
+Adopting PaceVer means giving up SemVer's compatibility contract and CalVer's
+at-a-glance recency in exchange for an at-a-glance _pace_ signal. Make that trade on
+purpose.
 
 ---
 
@@ -205,6 +237,15 @@ No. MARKETING and NATIVE live in the installed binary (rule 8), so changing eith
 one means shipping a new native build. Only OTA moves without a new binary, which is
 why a MARKETING or NATIVE change always lands with OTA back at `0`.
 
+**Can I roll back a native release?**
+No, and that's by design: like the app stores themselves, PaceVer has no concept of a
+native rollback. NATIVE only ever moves forward (rule 2's precedence), and an OTA
+release is scoped to the native build it was produced for (rule 9), so you can't drop
+users back onto a previous binary's OTA lineage. To recover from a bad native build you
+re-release the previous good build's content forward under a new NATIVE number, for
+example shipping what was NATIVE 5 again as NATIVE 7, and go from there. OTA, by
+contrast, can be rolled back within the same native build, as fast as it ships.
+
 **A native change only affects iOS. Do I have to release Android too?**
 Yes, and on purpose. A NATIVE bump ships a new binary to _every_ platform, even one
 with no functional change, so all platforms stay on the same NATIVE build. This is
@@ -236,22 +277,35 @@ the recommended reset that lands you on `1.0.0`; if you don't reset, you carry y
 running numbers to `1.y.z`. The recommended path is simply `0.1.0` → `1.0.0` → onward.
 The exact moment doesn't really matter; it's a flag you raise when it feels true.
 
+**I already ship under SemVer. How do I migrate?**
+Easily, and without resetting. Keep your current version exactly as it is and start
+reading its three positions as `MARKETING.NATIVE.OTA` from your next release. An app at
+`3.4.1` just carries on: bump NATIVE for its next store binary, bump OTA for its next
+over-the-air update. There's no renumbering and nothing to start over, because the
+`0.1.0` start and the reset rules are only for brand-new projects. (You wouldn't want to
+reset anyway: the stores reject a marketing version that decreases, and MARKETING is
+monotonically non-decreasing by rule 3.)
+
 ---
 
 ## About
 
-PaceVer was created in 2026. _(working draft, authorship and home page TBD)_
+PaceVer was created in 2026 by [Pavlos Vinieratos](https://github.com/pvinis). The spec is
+published at [pacever.org](https://pacever.org).
 
 This specification is itself versioned with **SemVer**, not PaceVer. A spec is a
 document with a contract people rely on, not an app shipping through native and OTA
 channels, so by PaceVer's own Scope rule (rule 12) it uses the right tool for the
-job. Current version: **0.1.0** (SemVer).
+job.
+
+Current version: **1.0.0** (SemVer).
 
 ## License
 
 PaceVer, the Pace Versioning specification, is licensed under a
-[Creative Commons Attribution 4.0 International License (CC BY 4.0)][cc-by].
-Copyright (c) 2026 Pavlos Vinieratos. You are free to share and adapt it, including
-commercially, as long as you give appropriate credit.
+[Creative Commons Attribution 4.0 International License (CC BY 4.0)][cc-by]. You are free to
+share and adapt it, including commercially, as long as you give appropriate credit.
+
+Copyright © 2026 [Pavlos Vinieratos](https://github.com/pvinis).
 
 [cc-by]: https://creativecommons.org/licenses/by/4.0/
