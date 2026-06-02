@@ -39,9 +39,9 @@ A version number takes the form `MARKETING.NATIVE.OTA`:
   (JavaScript, styling, content, assets within the current runtime). Fast: lands in
   minutes, no store review.
 
-A new native build resets OTA to `0`; a MARKETING bump resets both NATIVE and OTA to
-`0` (so a redesign goes to `2.0.0`, never `2.7.3`). Increment the left, reset
-everything to its right.
+A new native build always resets OTA to `0`. By default a MARKETING bump resets NATIVE
+and OTA too, so a redesign goes to `2.0.0`; a team may instead let the numbers keep
+climbing to `2.6.2` (see the FAQ). Pick one convention and stay consistent.
 
 ---
 
@@ -99,9 +99,10 @@ interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
    as JavaScript, styling, content, and assets running within the current native
    runtime.
 1. When NATIVE is incremented, OTA MUST be reset to `0`, because a new native build
-   begins a fresh OTA lineage. When MARKETING is incremented, NATIVE and OTA MUST
-   both be reset to `0`. Incrementing any element resets every element to its right
-   to `0`.
+   begins a fresh OTA lineage. When MARKETING is incremented, NATIVE and OTA SHOULD
+   be reset to `0`; this is the recommended default. A project MAY instead let NATIVE
+   and OTA keep climbing across a MARKETING bump (see the FAQ), but it MUST pick one
+   convention and apply it consistently.
 1. A freshly installed native build, before any OTA release has been applied, is at
    OTA `0`. The JavaScript and assets bundled inside a native build are its
    **baseline**, not an OTA release, and MUST NOT be counted as OTA `1`.
@@ -131,9 +132,10 @@ interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
 1. **Initial version and going stable.** A project SHOULD begin at `0.1.0`, where
    MARKETING `0` marks the pre-release era. NATIVE and OTA increment as usual
    through the `0.x` era. When the team considers the app stable and ready for the
-   public, it increments MARKETING to `1`, which (per rule 6) resets the rest: the
-   first stable release is `1.0.0`. The exact moment of going stable is the team's
-   call.
+   public, it increments MARKETING to `1`. With the recommended reset (rule 6) the
+   first stable release is `1.0.0`; a team that does not reset carries its running
+   numbers instead, so `0.5.3` becomes `1.5.3`. The exact moment of going stable is
+   the team's call.
 
 ---
 
@@ -184,9 +186,19 @@ No. OTA counts over-the-air _releases_, not their size. A typo fix and a new scr
 both bump OTA by one. If you care about magnitude, spend the MARKETING number on it.
 
 **Does bumping MARKETING reset NATIVE and OTA to zero?**
-Yes, always. A MARKETING bump goes to `X.0.0`. Incrementing any element resets every
-element to its right, exactly as a NATIVE bump resets OTA. So a redesign that takes
-you from `1.6.2` lands on `2.0.0`, not `2.6.2`.
+By default, yes. A MARKETING bump goes to `X.0.0`, exactly as a NATIVE bump resets
+OTA, so a redesign from `1.6.2` lands on `2.0.0`. This is the recommended convention,
+but resetting on a MARKETING bump is not mandatory; see the next question.
+
+**Can I skip the reset and let the numbers keep climbing?**
+Yes. Instead of resetting, you may let MARKETING float as a pure label while NATIVE
+and OTA keep climbing, so `1.6.2` becomes `2.6.2` rather than `2.0.0`. The tradeoff:
+you give up the clean `X.0.0` era boundary, but you keep a single monotonic native and
+OTA count across the whole life of the app, which some teams find easier to reason
+about. Precedence still works either way, since versions compare left to right.
+Whichever you pick, apply it consistently. (A new NATIVE build always resets OTA
+regardless; that part is not optional, because a new binary starts a fresh OTA
+lineage.)
 
 **Can I bump MARKETING or NATIVE with an over-the-air update?**
 No. MARKETING and NATIVE live in the installed binary (rule 8), so changing either
@@ -219,10 +231,10 @@ tool to its job.
 
 **What about the very first release?**
 Start at `0.1.0`. MARKETING `0` is the pre-release era, and you build through `0.x`
-until the app is ready. When it's ready for the public, bump MARKETING to `1`, which
-resets the rest and lands you on `1.0.0`. The recommended path is simply `0.1.0` →
-`1.0.0` → onward. The exact moment doesn't really matter; it's a flag you raise when
-it feels true.
+until the app is ready. When it's ready for the public, bump MARKETING to `1`. With
+the recommended reset that lands you on `1.0.0`; if you don't reset, you carry your
+running numbers to `1.y.z`. The recommended path is simply `0.1.0` → `1.0.0` → onward.
+The exact moment doesn't really matter; it's a flag you raise when it feels true.
 
 ---
 
