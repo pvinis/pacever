@@ -4,13 +4,11 @@
 #
 # Install the Settings app on this repo (or the pvinis account) and every push to
 # the default branch applies the configuration below. The file is the source of
-# truth for these settings — change them here, not in the GitHub UI.
+# truth for these settings. Change them here, not in the GitHub UI.
 
 repository:
   name: pacever
-  description: >-
-    Pace Versioning (PaceVer): version your app by the pace each release ships
-    at — PROJECT.NATIVE.OTA. For React Native, Expo, and OTA-updatable apps.
+  description: Versioning for apps that ship native builds and over-the-air updates.
   homepage: https://pacever.org
   topics: versioning, version, semver, calver, react-native, expo, ota, over-the-air, mobile, app-versioning, eas-update, codepush, specification
   private: false
