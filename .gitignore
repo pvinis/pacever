@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Node / tooling (in case build tooling is added later)
+node_modules/
+dist/
+.cache/

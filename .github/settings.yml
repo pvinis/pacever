@@ -1,0 +1,55 @@
+# Repository settings, managed as code by the "Settings" GitHub App.
+#   App:  https://github.com/apps/settings
+#   Docs: https://probot.github.io/apps/settings/
+#
+# Install the Settings app on this repo (or the pvinis account) and every push to
+# the default branch applies the configuration below. The file is the source of
+# truth for these settings — change them here, not in the GitHub UI.
+
+repository:
+  name: pacever
+  description: >-
+    Pace Versioning (PaceVer): version your app by the pace each release ships
+    at — PROJECT.NATIVE.OTA. For React Native, Expo, and OTA-updatable apps.
+  homepage: https://pacever.org
+  topics: versioning, version, semver, calver, react-native, expo, ota, over-the-air, mobile, app-versioning, eas-update, codepush, specification
+  private: false
+  has_issues: true
+  has_projects: false
+  has_wiki: false
+  has_downloads: false
+  default_branch: main
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: true
+  delete_branch_on_merge: true
+
+# Issue labels for spec discussion, modelled on how semver/semver triages issues.
+labels:
+  - name: bug
+    color: "d73a4a"
+    description: Something in the spec or site is wrong
+  - name: clarification
+    color: "0075ca"
+    description: A rule needs clarifying
+  - name: enhancement
+    color: "a2eeef"
+    description: A proposed change to the spec or site
+  - name: question
+    color: "d876e3"
+    description: A question about how PaceVer works
+  - name: translation
+    color: "fbca04"
+    description: A translation of the spec
+
+# Branch protection is intentionally left off while the spec is a solo draft.
+# Enable it later by uncommenting and adjusting:
+#
+# branches:
+#   - name: main
+#     protection:
+#       required_pull_request_reviews:
+#         required_approving_review_count: 1
+#       required_status_checks: null
+#       enforce_admins: false
+#       restrictions: null
