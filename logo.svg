@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 300">
+  <!-- PaceVer mark: MARKETING.NATIVE.OTA as three colour-coded blocks with round
+       grey separator dots on the baseline. -->
+  <rect x="41" y="75" width="64" height="150" rx="14" fill="#8b5cf6" />
+  <rect x="143" y="75" width="64" height="150" rx="14" fill="#e0852b" />
+  <rect x="245" y="75" width="64" height="150" rx="14" fill="#2bb277" />
+  <circle cx="124" cy="212" r="13" fill="#8a8a92" />
+  <circle cx="226" cy="212" r="13" fill="#8a8a92" />
+</svg>

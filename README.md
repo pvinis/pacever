@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.svg" alt="PaceVer" width="350" />
+</p>
+
 # Pace Versioning (PaceVer)
 
 > Version your app by the **pace** each release travels at.

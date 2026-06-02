@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- MARKETING.NATIVE.OTA: three colour-coded blocks with round grey
+       separator dots sitting low on the baseline between them. -->
+  <rect x="1.5" y="8" width="7" height="16" rx="1.6" fill="#8b5cf6" />
+  <rect x="12.5" y="8" width="7" height="16" rx="1.6" fill="#e0852b" />
+  <rect x="23.5" y="8" width="7" height="16" rx="1.6" fill="#2bb277" />
+  <circle cx="10.5" cy="22.5" r="1.5" fill="#8a8a92" />
+  <circle cx="21.5" cy="22.5" r="1.5" fill="#8a8a92" />
+</svg>
