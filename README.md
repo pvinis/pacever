@@ -1,3 +1,5 @@
+<!-- The spec text here mirrors index.html. Change both together. -->
+
 <p align="center">
   <img src="logo.svg" alt="PaceVer" width="350" />
 </p>

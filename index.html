@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- The spec text here mirrors README.md. Change both together. -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -400,12 +401,13 @@
 
           <h3>I already ship under SemVer. How do I migrate?</h3>
           <p>
-            Don't reset downward. The App Store and Play Store reject a marketing version that decreases,
-            so an app already at, say, <code>3.4.1</code> cannot adopt PaceVer by starting over at
-            <code>1.0.0</code>. Because MARKETING is a free, monotonically non-decreasing number, keep
-            your current leading number as MARKETING and start applying PaceVer's NATIVE and OTA
-            semantics from where you are. The <code>0.1.0</code> start and the reset rules are for new
-            projects; an existing app carries its history forward.
+            Easily, and without resetting. Keep your current version exactly as it is and start reading
+            its three positions as <code>MARKETING.NATIVE.OTA</code> from your next release. An app at
+            <code>3.4.1</code> just carries on: bump NATIVE for its next store binary, bump OTA for its
+            next over-the-air update. There's no renumbering and nothing to start over, because the
+            <code>0.1.0</code> start and the reset rules are only for brand-new projects. (You wouldn't
+            want to reset anyway: the stores reject a marketing version that decreases, and MARKETING is
+            monotonically non-decreasing by rule 3.)
           </p>
         </div>
       </section>
